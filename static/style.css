@@ -9,6 +9,7 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -33,14 +34,6 @@ body {
 }
 
 /* Background elements for auth pages */
-#neuron-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -2;
-}
 
 .overlay {
     position: fixed;
@@ -72,6 +65,7 @@ body {
     border: 1px solid rgba(0, 198, 255, 0.2);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     width: 100%;
+    max-width: 100%;
     animation: slideUp 0.6s ease-out;
     margin: auto;
 }
@@ -483,7 +477,8 @@ body {
     }
     
     .auth-card {
-        width: calc(100vw - 20px);
+        width: 100%;
+        max-width: 100%;
         margin: 0;
     }
 }
@@ -838,15 +833,18 @@ body {
     margin-left: 0;
     padding: 90px 30px 40px;
     min-height: 100vh;
+    box-sizing: border-box;
     transition: all 0.3s ease;
     width: 100%;
     position: relative;
     z-index: 1;
 }
 
+
+
 /* Container */
 .dashboard .container {
-    max-width: 1200px;
+    max-width: 1500px;
     margin: 0 auto;
     width: 100%;
 }
@@ -862,6 +860,7 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
 }
+
 
 .card:hover {
     transform: translateY(-5px);
@@ -1058,7 +1057,7 @@ body {
 /* Grid */
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr;   /* FULL WIDTH */
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
     gap: 24px;
 }
 
@@ -1090,7 +1089,9 @@ body {
     
     .dashboard {
         margin-left: 280px;
-        padding: 30px 40px;
+        width: calc(100% - 280px);
+        padding: 30px;
+        box-sizing: border-box;
     }
     
     .menu-btn {
@@ -1365,13 +1366,7 @@ body {
   text-decoration: none;
 }
 
-body {
-  background: #0b1220;
-  color: #fff;
-  font-family: Arial, sans-serif;
-}
-
-.container {
+.path-container {
   max-width: 900px;
   margin: 80px auto;
   text-align: center;
@@ -1381,16 +1376,21 @@ body {
   display: flex;
   justify-content: center;
   gap: 40px;
-  margin-top: 40px;
+  flex-wrap: wrap;
 }
 
 .card {
-  width: 280px;
+  max-width: 280px;
+    width: 100%;
   padding: 30px;
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   background: linear-gradient(145deg, #101b34, #0c1428);
+}
+.dashboard .card {
+    max-width: none;
+    width: 100%;
 }
 
 .card:hover {
@@ -1414,10 +1414,20 @@ body {
 /* Fix: background canvas should not block clicks */
 #neuron-bg {
     position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
+#neuron-bg canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
+}
+
 
 /* Ensure dashboard content is clickable */
 .dashboard,
