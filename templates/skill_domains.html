@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #0f2a44, #020b18);
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            padding: 60px 40px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            color: #8be9fd;
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: center;
+            color: #9fb3c8;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            font-size: 16px;
+        }
+
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .domain-card {
+            padding: 22px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #0b1e36, #071425);
+            box-shadow: 0 0 20px rgba(120, 120, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.35s ease;
+        }
+
+        .domain-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 0 30px rgba(139, 233, 253, 0.35);
+        }
+
+        .domain-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>{{ title }}</h1>
+<p>Select a skill and follow a structured learning roadmap</p>
+
+<div class="domain-grid">
+    {% for domain in domains %}
+        <div class="domain-card" onclick="openSkill('{{ domain }}')">
+            <div class="domain-title">{{ domain }}</div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    function openSkill(skill) {
+        window.location.href =
+            "/career-roadmap/steps?skill=" + encodeURIComponent(skill);
+    }
+</script>
+
+</body>
+</html>

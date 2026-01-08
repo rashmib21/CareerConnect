@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Resume Results</title>
+
+    <!-- Optional: Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <!-- Styles (you can move this to CSS file later) -->
+    <style>
+/* ---------- GLOBAL ---------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+    background: radial-gradient(circle at top left, #1e293b, #020617);
+  overflow-x: hidden;
+}
+
+/* ---------- BACKGROUND ---------- */
+.bg-animated {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, #38bdf8, transparent 40%),
+    radial-gradient(circle at 85% 80%, #ec4899, transparent 45%);
+  animation: hueShift 12s infinite alternate;
+  z-index: -1;
+}
+
+@keyframes hueShift {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(45deg); }
+}
+
+/* ---------- GRID LAYOUT ---------- */
+.resume-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  padding: 70px;
+  position: relative;   /* ✅ REQUIRED */
+  z-index: 1;           
+}
+
+/* ---------- FLIP CARD CORE ---------- */
+.flip-card {
+  perspective: 1400px;
+  height: 300px;
+}
+
+.flip-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flip-card:hover .flip-inner {
+  transform: rotateY(180deg);
+}
+
+/* ---------- CARD FACES ---------- */
+.flip-front,
+.flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+
+/* ---------- BASE CARD STYLE ---------- */
+.card {
+  border-radius: 26px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+  transition: background 0.6s ease;
+}
+
+/* ---------- FRONT GRADIENTS ---------- */
+.card.ats {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.card.matched {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+}
+
+.card.missing {
+  background: linear-gradient(135deg, #fa709a, #fee140);
+}
+
+.card.ai {
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+}
+
+/* ---------- BACK GRADIENTS (ON FLIP) ---------- */
+.flip-back.card.ats {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.flip-back.card.matched {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+}
+
+.flip-back.card.missing {
+  background: linear-gradient(135deg, #ee0979, #ff6a00);
+}
+
+.flip-back.card.ai {
+  background: linear-gradient(135deg, #8e2de2, #4a00e0);
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+/* ---------- TEXT ---------- */
+.card h3,
+.card h4 {
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.score {
+  font-size: 60px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ---------- TAGS ---------- */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.tag {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tag:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+}
+
+.good {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.bad {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* ---------- SUGGESTIONS ---------- */
+.suggestions {
+  padding-left: 20px;
+}
+
+.suggestions li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+/* ---------- HOVER LIFT ---------- */
+.flip-card:hover {
+  transform: translateY(-12px) scale(1.03);
+  transition: transform 0.4s ease;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .resume-container {
+    grid-template-columns: 1fr;
+    padding: 40px;
+  }
+}
+
+/* ---------- BACK BUTTON ---------- */
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateX(-6px);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+
+
+
+
+
+/* Individual blobs */
+.b1 {
+  background: #38bdf8;
+  top: 10%;
+  left: 10%;
+}
+
+.b2 {
+  background: #a855f7;
+  top: 55%;
+  left: 60%;
+  animation-delay: 4s;
+}
+
+.b3 {
+  background: #22c55e;
+  top: 30%;
+  left: 75%;
+  animation-delay: 8s;
+}
+
+
+
+
+
+#neuronCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+}
+/* ---------- SYNAPSE NETWORK ---------- */
+#synapseCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+}
+#synapse3D {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+}
+
+
+</style>
+
+</head>
+
+<body>
+   
+    <canvas id="synapse3D"></canvas>
+
+
+
+    <button class="back-btn" onclick="history.back()" aria-label="Go back">
+  &#8592;
+</button>
+
+    <!-- 🔥 PASTE HERE -->
+
+    <div class="resume-container">
+
+      <!-- ATS FLIP CARD -->
+      <div class="flip-card">
+  <div class="flip-inner">
+    <div class="flip-front card ats">
+      <h3>ATS Score</h3>
+      <div class="score">{{ analysis.ats_score }}%</div>
+    </div>
+
+    <div class="flip-back card ats">
+      <h4>Score Insight</h4>
+      <p>
+        {% if analysis.ats_score >= 70 %}
+          Strong ATS match
+        {% elif analysis.ats_score >= 40 %}
+          Average – needs improvement
+        {% else %}
+          Low – missing key skills
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>
+
+
+      <!-- SKILLS SECTION -->
+      <div class="flip-card">
+  <div class="flip-inner">
+    <div class="flip-front card matched">
+      <h3>Matched Skills</h3>
+      <div class="tags">
+        {% for skill in analysis.matched_skills %}
+          <span class="tag good">{{ skill }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="flip-back card matched">
+      <h4>Total Matched</h4>
+      <div class="score">{{ analysis.matched_skills | length }}</div>
+      <p>Skills recognized by ATS</p>
+    </div>
+  </div>
+</div>
+
+<div class="flip-card">
+  <div class="flip-inner">
+    <div class="flip-front card missing">
+      <h3>Missing Skills</h3>
+      <div class="tags">
+        {% for skill in analysis.missing_skills %}
+          <span class="tag bad">{{ skill }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="flip-back card missing">
+      <h4>Priority Skills</h4>
+      <p>Focus on these to boost ATS score quickly.</p>
+    </div>
+  </div>
+</div>
+<div class="flip-card">
+  <div class="flip-inner">
+    <div class="flip-front card ai">
+      <h3>AI Suggestions</h3>
+      <ul class="suggestions">
+        {% for tip in analysis.suggestions[:3] %}
+          <li>{{ tip }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="flip-back card ai">
+      <h4>Action Plan</h4>
+      <ul>
+        {% for tip in analysis.suggestions %}
+          <li>{{ tip }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  if (window.history.length <= 1) {
+    document.querySelector(".back-btn")?.remove();
+  }
+  const canvas = document.getElementById("synapse3D");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const FOV = 400;
+const nodes = [];
+const NODE_COUNT = 70;
+const MAX_DIST = 140;
+
+class Node {
+  constructor() {
+    this.x = (Math.random() - 0.5) * canvas.width;
+    this.y = (Math.random() - 0.5) * canvas.height;
+    this.z = Math.random() * 800;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.3;
+    this.vz = (Math.random() - 0.5) * 0.6;
+  }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.z += this.vz;
+
+    if (this.z < 0 || this.z > 800) this.vz *= -1;
+  }
+
+  project() {
+    const scale = FOV / (FOV + this.z);
+    return {
+      x: this.x * scale + canvas.width / 2,
+      y: this.y * scale + canvas.height / 2,
+      r: scale * 2
+    };
+  }
+}
+
+for (let i = 0; i < NODE_COUNT; i++) {
+  nodes.push(new Node());
+}
+
+function drawConnections() {
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dz = nodes[i].z - nodes[j].z;
+      const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+      if (dist < MAX_DIST) {
+        const opacity = 1 - dist / MAX_DIST;
+        ctx.strokeStyle = `rgba(120,200,255,${opacity})`;
+        ctx.beginPath();
+        const p1 = nodes[i].project();
+        const p2 = nodes[j].project();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  nodes.forEach(n => {
+    n.update();
+    const p = n.project();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.fill();
+  });
+
+  drawConnections();
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+    /* ---------- SYNAPSE NETWORK ---------- */
+
+</script>
+
+    <!-- 🔥 END PASTE -->
+
+</body>
+</html>

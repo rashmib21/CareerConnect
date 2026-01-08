@@ -1,0 +1,14 @@
+{
+  "domain": "frontend",
+  "title": "Frontend Development",
+  "steps": [
+    "HTML Basics",
+    "CSS Fundamentals",
+    "JavaScript Basics",
+    "Git & GitHub",
+    "React Basics",
+    "API Integration",
+    "Mini Project",
+    "Interview Preparation"
+  ]
+}

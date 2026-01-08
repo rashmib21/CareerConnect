@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Career Roadmap</title>
+
+    <style>
+        /* ===== Page Background ===== */
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #0f2a44, #020b18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* ===== Container ===== */
+        .roadmap-container {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .roadmap-title {
+            font-size: 36px;
+            margin-bottom: 40px;
+            color: #00d4ff;
+        }
+
+        /* ===== Cards ===== */
+        .path-options {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .path-card {
+            width: 220px;
+            height: 140px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            box-shadow: 0 0 25px rgba(0, 180, 255, 0.4);
+            transform-style: preserve-3d;
+
+        }
+        .path-options {
+    perspective: 1000px;
+}
+
+        .path-card span {
+    transform: translateZ(40px);
+    display: inline-block;
+}
+
+
+        .path-card.non-tech {
+            background: linear-gradient(135deg, #ff7a18, #ffb347);
+        }
+
+        .path-card:hover {
+            transform: translateY(-12px) scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 180, 255, 0.8);
+        }
+
+        /* ===== Floating Animation ===== */
+        .dot {
+    position: absolute;
+    border-radius: 50%;
+background: rgba(160, 100, 255, 0.2);
+    filter: blur(1px);
+}
+
+        .dot1 {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 10%;
+        }
+
+        .dot2 {
+            width: 180px;
+            height: 180px;
+            bottom: 20%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .dot3 {
+            width: 90px;
+            height: 90px;
+            bottom: 35%;
+            left: 40%;
+            animation-delay: 4s;
+        }
+        /* Top → Bottom */
+.float-down {
+    animation: floatDown 4s linear infinite;
+}
+
+/* Bottom → Top */
+.float-up {
+    animation: floatUp 5s linear infinite;
+}
+
+/* Left → Right */
+.float-right {
+    animation: floatRight 6s linear infinite;
+}
+
+/* Diagonal */
+.float-diagonal {
+    animation: floatDiagonal 7s linear infinite;
+}
+
+/* Faster small particles */
+.fast {
+    animation-duration: 3s !important;
+}
+
+/* Keyframes */
+@keyframes floatDown {
+    0% { transform: translateY(-120px); opacity: 0; }
+    100% { transform: translateY(100vh); opacity: 1; }
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(100vh); opacity: 0; }
+    100% { transform: translateY(-120px); opacity: 1; }
+}
+
+@keyframes floatRight {
+    0% { transform: translateX(-120px); opacity: 0; }
+    100% { transform: translateX(100vw); opacity: 1; }
+}
+
+@keyframes floatDiagonal {
+    0% { transform: translate(-120px, -120px); opacity: 0; }
+    100% { transform: translate(100vw, 100vh); opacity: 1; }
+}
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="roadmap-container">
+        <h2 class="roadmap-title">Select Career Path</h2>
+
+        <div class="path-options">
+            <div class="path-card tilt" onclick="selectPath('tech')">
+    <span>Tech</span>
+</div>
+
+
+            <div class="path-card non-tech tilt" onclick="selectPath('non-tech')">
+    <span>Non-Tech</span>
+</div>
+
+
+
+    <script>
+    const cards = document.querySelectorAll(".tilt");
+
+    cards.forEach(card => {
+        card.addEventListener("mousemove", (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = ((y - centerY) / centerY) * 10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+
+            card.style.transform =
+                `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        card.addEventListener("mouseleave", () => {
+            card.style.transform = "rotateX(0deg) rotateY(0deg)";
+        });
+    });
+
+    function selectPath(type) {
+        localStorage.setItem("career_path", type);
+        window.location.href = "/career-roadmap/domains?type=" + type;
+    }
+</script>
+
+<!-- Small moving balls -->
+<div class="dot float-down fast" style="width:14px;height:14px;left:10%;top:-20px;"></div>
+<div class="dot float-down" style="width:18px;height:18px;left:30%;top:-40px;"></div>
+
+<div class="dot float-up fast" style="width:12px;height:12px;left:60%;bottom:-20px;"></div>
+<div class="dot float-up" style="width:20px;height:20px;left:80%;bottom:-50px;"></div>
+
+<div class="dot float-right fast" style="width:10px;height:10px;top:20%;left:-20px;"></div>
+<div class="dot float-right" style="width:16px;height:16px;top:60%;left:-40px;"></div>
+
+<div class="dot float-diagonal fast" style="width:14px;height:14px;left:-30px;top:-30px;"></div>
+<div class="dot float-diagonal" style="width:22px;height:22px;left:-60px;top:-60px;"></div>
+
+</body>
+</html>

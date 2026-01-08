@@ -1,0 +1,14 @@
+{
+  "domain": "backend",
+  "title": "Backend Development",
+  "steps": [
+    "Programming Basics",
+    "Databases (SQL)",
+    "Backend Language",
+    "Framework",
+    "Authentication",
+    "REST APIs",
+    "Project",
+    "Deployment"
+  ]
+}

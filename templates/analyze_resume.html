@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analyze Resume</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ---------- PAGE ---------- */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* ---------- CENTERING ---------- */
+.analyze-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* ---------- CARD ---------- */
+.analyze-card {
+  width: 420px;
+  padding: 35px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  animation: fadeUp 0.9s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.analyze-card h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* ---------- FORM ---------- */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+select,
+input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* ---------- BUTTON ---------- */
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+#neuronCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.error-msg {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+
+/* ---------- BACK BUTTON ---------- */
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateX(-4px);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+    </style>
+</head>
+
+<body>
+    <button class="back-btn" onclick="history.back()" aria-label="Go back">
+  &#8592;
+</button>
+
+<canvas id="neuronCanvas"></canvas>
+
+<div class="analyze-page">
+
+  <div class="analyze-card">
+    <h2>AI Resume Analyzer</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="error-msg">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
+    <form method="POST" enctype="multipart/form-data">
+
+      <div class="form-group">
+        <label>Select Target Role</label>
+        <select name="job_role" required>
+  <option value="" disabled selected>Select Target Role</option>
+
+  <!-- Data Roles -->
+  <option value="data_science">Data Scientist</option>
+  <option value="data_analytics">Data Analyst</option>
+  <option value="business_analytics">Business Analyst</option>
+  <option value="ml_engineer">Machine Learning Engineer</option>
+
+  <!-- Development -->
+  <option value="full_stack">Full Stack Developer</option>
+  <option value="frontend">Frontend Developer</option>
+  <option value="backend">Backend Developer</option>
+  <option value="java_dev">Java Developer</option>
+  <option value="python_dev">Python Developer</option>
+
+  <!-- Cloud & DevOps -->
+  <option value="cloud_engineer">Cloud Engineer</option>
+  <option value="devops">DevOps Engineer</option>
+
+  <!-- Security -->
+  <option value="cyber_security">Cyber Security Analyst</option>
+
+  <!-- QA & Testing -->
+  <option value="qa">QA / Software Tester</option>
+
+  <!-- UI / UX -->
+  <option value="ui_ux">UI / UX Designer</option>
+
+  <!-- Mobile -->
+  <option value="android">Android Developer</option>
+  <option value="ios">iOS Developer</option>
+
+  <!-- Emerging Tech -->
+  <option value="ai_engineer">AI Engineer</option>
+  <option value="blockchain">Blockchain Developer</option>
+</select>
+
+      </div>
+
+      <div class="form-group">
+        <label>Upload Resume</label>
+        <input type="file" name="resume_file" required>
+      </div>
+
+      <button type="submit">Analyze Resume</button>
+
+    </form>
+  </div>
+
+</div>
+
+<script>
+const canvas = document.getElementById("neuronCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let mouse = { x: null, y: null };
+
+window.addEventListener("mousemove", e => {
+  mouse.x = e.x;
+  mouse.y = e.y;
+});
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+/* ---------- NEURON CLASS ---------- */
+class Neuron {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = (Math.random() - 0.5) * 1.2;
+    this.vy = (Math.random() - 0.5) * 1.2;
+    this.radius = 2.5;
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+  }
+
+  move() {
+    this.x += this.vx;
+    this.y += this.vy;
+
+    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+    // Mouse interaction (repel)
+    if (mouse.x && mouse.y) {
+      let dx = this.x - mouse.x;
+      let dy = this.y - mouse.y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 120) {
+        this.x += dx / dist;
+        this.y += dy / dist;
+      }
+    }
+  }
+}
+
+/* ---------- CREATE NEURONS ---------- */
+const neurons = [];
+for (let i = 0; i < 90; i++) {
+  neurons.push(new Neuron());
+}
+
+/* ---------- CONNECT NEURONS ---------- */
+function connect() {
+  for (let i = 0; i < neurons.length; i++) {
+    for (let j = i; j < neurons.length; j++) {
+      let dx = neurons[i].x - neurons[j].x;
+      let dy = neurons[i].y - neurons[j].y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 120) {
+        ctx.strokeStyle = "rgba(255,255,255,0.15)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(neurons[i].x, neurons[i].y);
+        ctx.lineTo(neurons[j].x, neurons[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+/* ---------- ANIMATE ---------- */
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  neurons.forEach(n => {
+    n.move();
+    n.draw();
+  });
+
+  connect();
+  requestAnimationFrame(animate);
+}
+
+animate();
+if (window.location.pathname === "/dashboard") {
+  document.querySelector(".back-btn")?.remove();
+}
+
+if (window.history.length <= 1) {
+  document.querySelector(".back-btn")?.remove();
+}
+
+
+</script>
+
+</body>
+</html>
